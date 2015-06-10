@@ -1,0 +1,5 @@
+{
+ :log {:uri "log:LOG?showAll=true"
+       :message-template "success"}
+ :success-email {:uri "smtps://smtp.mail.yahoo.co.jp:465?username=${header.username}&password=${header.password}&from=${header.username}@yahoo.co.jp&subject=Batch%20status&to=${header.to}"
+                 :message-template "success"} }

@@ -28,12 +28,21 @@
 (defn process-template [route config]
   (if-let [template-name (:message-template config)]
     (.process route (make-template-processor template-name))
-    route))
+    (if-let [message (:message config)]
+      (.process route (proxy [Processor] []
+                        (process [exchange]
+                          (.setBody (.getOut exchange) message))))
+      route)))
+
+(defn filter-rules [rules]
+  [(filter (fn [[type config]] (find config :to)) rules)
+   (filter (fn [[type config]] (not (find config :to))) rules)])
 
 (defn -main [& args]
   (let [rules   (load-file (first args))
         context (DefaultCamelContext.)
-        port (get env :port 2121)]
+        port (get env :port 2121)
+        [consumer-rules producer-rules] (filter-rules rules)]
     (.addRoutes context
                 (proxy [RouteBuilder] []
                   (configure []
@@ -41,12 +50,17 @@
                                     (from (str "jetty:http://0.0.0.0:" port "/?matchOnUriPrefix=true"))
                                     (process edn-processor)
                                     choice)]
-                      (doseq [[type config] rules]
+                      (doseq [[type config] producer-rules]
                         (let [conditional-route (.when route (. (Builder/header "type") (isEqualTo (name type))))]
                           (-> conditional-route
                               (process-template config)
                               (.recipientList (Builder/simple (:uri config))))))
                       (-> route
                           (.otherwise)
-                          (.to "log:ROUTE_NOT_FOUND?showAll=true"))))))
+                          (.to "log:ROUTE_NOT_FOUND?showAll=true")))
+                    (doseq [[type config] consumer-rules]
+                      (let [route (.. this
+                                      (from (:uri config)))]
+                        (process-template route config)
+                        (.to route (:to  config)))))))
     (.start context)))

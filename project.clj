@@ -1,4 +1,4 @@
-(defproject job-streamer-notificator (slurp "VERSION")
+(defproject job-streamer-notificator (clojure.string/trim-newline (slurp "VERSION"))
   :dependencies [[org.clojure/clojure "1.7.0-RC2"]
                  [environ "1.0.0"]
                  [ch.qos.logback/logback-classic "1.1.3"]

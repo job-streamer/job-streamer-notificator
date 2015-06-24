@@ -5,7 +5,8 @@
         [environ.core :only [env]])
   (:import [org.apache.camel Processor]
            [org.apache.camel.impl DefaultCamelContext]
-           [org.apache.camel.builder Builder RouteBuilder ValueBuilder]))
+           [org.apache.camel.builder Builder RouteBuilder ValueBuilder])
+  (:gen-class))
 
 (def edn-processor
   (proxy [Processor] []

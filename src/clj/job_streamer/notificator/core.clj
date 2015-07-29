@@ -21,9 +21,7 @@
     (process [exchange]
       (let [parameters  (.getBody (.getIn exchange))
             out (.getOut exchange)]
-        (.setHeader out "to" (:to parameters))
-        (.setHeader out "username" (:username parameters))
-        (.setHeader out "password" (:password parameters))
+        (.setHeader out "job-name" (:job-name parameters))
         (.setBody out (template/render template-name (stringify-keys parameters)))))))
 
 (defn process-template [route config]

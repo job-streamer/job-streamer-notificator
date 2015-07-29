@@ -5,11 +5,13 @@
                  [org.apache.camel/camel-core  "2.15.2"]
                  [org.apache.camel/camel-mail  "2.15.2"]
                  [org.apache.camel/camel-jetty "2.15.2"]
-                 [com.github.jknack/handlebars "2.1.0"]]
+                 [com.github.jknack/handlebars "2.2.3"]]
   :source-paths ["src/clj"]
   :source-java-paths ["src/java"]
   
   :aot :all
   :main job-streamer.notificator.core
   :pom-plugins [[org.apache.maven.plugins/maven-assembly-plugin "2.5.5"
-                 {:configuration [:descriptors [:descriptor "src/assembly/dist.xml"]]}]])
+                 {:configuration [:descriptors [:descriptor "src/assembly/dist.xml"]]}]]
+
+  :profiles {:local {:resource-paths ["local-resources"]}})

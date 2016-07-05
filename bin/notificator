@@ -2,5 +2,10 @@
 
 version=$(cat `dirname $0`/../VERSION)
 
-java -cp dist/job-streamer-notificator-${version}.jar:"lib/*" clojure.main -m job-streamer.notificator.core
+if [ $# -ne 1 ]; then
+  echo "arg must be one" 1>&2
+  echo "usage:bin/notificator arg(edn file path)" 1>&2
+  exit 1
+fi
 
+java -cp dist/job-streamer-notificator-${version}.jar:"lib/*" clojure.main -m job-streamer.notificator.core $1

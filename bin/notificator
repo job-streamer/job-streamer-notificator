@@ -2,5 +2,5 @@
 
 version=$(cat `dirname $0`/../VERSION)
 
-java -cp dist/job-streamer-notificator-${version}.jar:"lib/*" clojure.main -m job-streamer.notificator.core
+java -cp dist/job-streamer-notificator-${version}.jar:"lib/*" clojure.main -m job-streamer.notificator.core $*
 

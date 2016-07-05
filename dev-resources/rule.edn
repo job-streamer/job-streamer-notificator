@@ -3,6 +3,9 @@
        :message-template "success"}
  :success-email {:uri "smtps://smtp.mail.yahoo.co.jp:465?username=${header.username}&password=${header.password}&from=${header.username}@yahoo.co.jp&subject=Batch%20status&to=${header.to}"
                  :message-template "success"}
+ :alert-mail-job {:uri "http://localhost:45102/default/job/job1/executions?Exchange.CONTENT_TYPE=application/edn"
+                  :message "{}"}
  :file-trigger {:uri "file://target/inbox?preMove=${file:parent}/../inprogress/${file:name}"
                 :to "http://localhost:45102/default/job/job1/executions?Exchange.CONTENT_TYPE=application/edn"
                 :message "{}"}}
+

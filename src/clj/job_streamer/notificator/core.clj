@@ -16,17 +16,17 @@
         (.setBody out (edn/read-string (.getBody in String)))
         (.setHeader out "type" (.substring (.getHeader in "CamelHttpUri") 1))))))
 
-(defn make-template-processor [template-name]
+(defn make-template-processor [template-name hbs-base-dir]
   (proxy [Processor] []
     (process [exchange]
       (let [parameters  (.getBody (.getIn exchange))
             out (.getOut exchange)]
         (.setHeader out "job-name" (:job-name parameters))
-        (.setBody out (template/render template-name (stringify-keys parameters)))))))
+        (.setBody out (template/render template-name (stringify-keys parameters) hbs-base-dir))))))
 
-(defn process-template [route config]
+(defn process-template [route config hbs-base-dir]
   (if-let [template-name (:message-template config)]
-    (.process route (make-template-processor template-name))
+    (.process route (make-template-processor template-name hbs-base-dir))
     (if-let [message (:message config)]
       (.process route (proxy [Processor] []
                         (process [exchange]
@@ -40,17 +40,18 @@
 (def banner "
    ___       _     _____ _
   |_  |     | |   /  ___| |                         Notificator
-    | | ___ | |__ \ `--.| |_ _ __ ___  __ _ _ __ ___   ___ _ __
-    | |/ _ \| '_ \ `--. \ __| '__/ _ \/ _` | '_ ` _ \ / _ \ '__|
-/\__/ / (_) | |_) /\__/ / |_| | |  __/ (_| | | | | | |  __/ |
-\____/ \___/|_.__/\____/ \__|_|  \___|\__,_|_| |_| |_|\___|_|
-")
+    | | ___ | |__ \\ `--.| |_ _ __ ___  __ _ _ __ ___   ___ _ __
+    | |/ _ \\| '_ \\ `--. \\ __| '__/ _ \\/ _` | '_ ` _ \\ /_ \\ '__|
+/\\__/ / (_) | |_) /\\__/ / |_| | |  __/(_| | | | | | |  __/ |
+\\____/ \\___/|_.__/\\____/ \\__|_|  \\___|\\__,_|_| |_| |_|\\___|_|
+  ")
 
 (defn -main [& args]
   (when (empty? args)
-    (.println *err* "Usage: bin/notificator [rule file]")
+    (.println *err* "Usage: bin/notificator [rule file] [hbs dir path]")
     (.exit (Runtime/getRuntime) 255))
-  (let [rules   (load-file (first args))
+  (let [rules (load-file (first args))
+        hbs-base-dir (second args)
         context (DefaultCamelContext.)
         port (Integer/parseInt (or (:notificator-port env) "2121"))
         [consumer-rules producer-rules] (filter-rules rules)]
@@ -64,7 +65,7 @@
                       (doseq [[type config] producer-rules]
                         (let [conditional-route (.when route (. (Builder/header "type") (isEqualTo (name type))))]
                           (-> conditional-route
-                              (process-template config)
+                              (process-template config hbs-base-dir)
                               (.recipientList (Builder/simple (:uri config))))))
                       (-> route
                           (.otherwise)
@@ -72,6 +73,6 @@
                     (doseq [[type config] consumer-rules]
                       (let [route (.. this
                                       (from (:uri config)))]
-                        (process-template route config)
+                        (process-template route config hbs-base-dir)
                         (.to route (:to  config)))))))
     (.start context)))

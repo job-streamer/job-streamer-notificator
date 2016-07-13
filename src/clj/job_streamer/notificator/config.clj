@@ -3,9 +3,9 @@
 
 (def defaults
   {:camel {:port 2121
-           :template-dir "templates"}})
+           :templates-dir "templates"}})
 
 (def environ
   {:camel {:port (some-> env :notificator-port Integer.)
-           :config-path (some-> env :notificator-config)
-           :template-dir (some-> env :notificator-template-dir)}})
+           :rules-path (some-> env :notificator-rules)
+           :templates-dir (some-> env :notificator-templates-dir)}})

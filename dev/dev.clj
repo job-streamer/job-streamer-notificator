@@ -13,8 +13,8 @@
                                       [system :as system])))
 
 (def dev-config
-  {:camel {:template-dir "dev-resources"
-           :config-path  "dev-resources/rule.edn"}})
+  {:camel {:templates-dir "dev-resources"
+           :rules-path  "dev-resources/rule.edn"}})
 
 (def config
   (meta-merge config/defaults

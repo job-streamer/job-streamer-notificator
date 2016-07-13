@@ -28,8 +28,8 @@
     (.exit (Runtime/getRuntime) 255))
 
   (let [args-config (meta-merge {}
-                                (when-let [rule-path (first args)]
-                                  {:camel {:rules-path rule-path}})
+                                (when-let [rules-path (first args)]
+                                  {:camel {:rules-path rules-path}})
                                 (when-let [templates-dir (second args)]
                                   {:camel {:templates-dir templates-dir}}))
         system (new-system (meta-merge config args-config))]

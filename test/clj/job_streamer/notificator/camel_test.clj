@@ -13,7 +13,7 @@
 
 (def test-config
   {:camel {:port 21212
-           :template-dir "dev-resources"}})
+           :templates-dir "dev-resources"}})
 
 (def config
   (meta-merge config/defaults

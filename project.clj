@@ -27,6 +27,7 @@
   :profiles
   {:dev  [:project/dev  :profiles/dev]
    :test [:project/test :profiles/test]
+   :uberjar {:aot :all}
    :profiles/dev  {}
    :profiles/test {}
    :project/dev   {:dependencies [[duct/generate "0.8.0"]

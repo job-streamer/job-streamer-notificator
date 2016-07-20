@@ -24,14 +24,14 @@
 
 (defn -main [& args]
   (when (empty? args)
-    (.println *err* "Usage: bin/notificator [rule file] [templates dir]")
+    (.println *err* "Usage: bin/notificator [rule file] [templates prefix]")
     (.exit (Runtime/getRuntime) 255))
 
   (let [args-config (meta-merge {}
                                 (when-let [rules-path (first args)]
                                   {:camel {:rules-path rules-path}})
-                                (when-let [templates-dir (second args)]
-                                  {:camel {:templates-dir templates-dir}}))
+                                (when-let [prefix (second args)]
+                                  {:template {:prefix prefix}}))
         system (new-system (meta-merge config args-config))]
     (println banner)
     (add-shutdown-hook ::stop-system #(component/stop system))

@@ -2,6 +2,7 @@
   (:require [com.stuartsierra.component :as component]
             [environ.core :refer [env]])
   (:import [com.github.jknack.handlebars Handlebars]
+           [com.github.jknack.handlebars.helper StringHelpers]
            [com.github.jknack.handlebars.io FileTemplateLoader CompositeTemplateLoader
             ClassPathTemplateLoader TemplateLoader]))
 
@@ -21,7 +22,8 @@
                     (into-array TemplateLoader
                                 [(FileTemplateLoader. prefix)
                                  (ClassPathTemplateLoader. prefix)]))
-            runtime (Handlebars. loader)]
+            runtime (.registerHelpers (Handlebars. loader) StringHelpers)]
+
         (assoc component :runtime runtime))))
 
   (stop [component]

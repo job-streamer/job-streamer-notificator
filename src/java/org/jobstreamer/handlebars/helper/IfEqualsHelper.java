@@ -1,6 +1,7 @@
 package org.jobstreamer.handlebars.helper;
 
 import java.io.IOException;
+import java.util.Objects;
 
 import com.github.jknack.handlebars.Helper;
 import com.github.jknack.handlebars.Options;
@@ -31,10 +32,10 @@ public class IfEqualsHelper implements Helper<Object> {
     Buffer buffer = options.buffer();
     String target = (String) options.param(0, null);
 
-    if ( target == null || !target.equals(context)) {
-      buffer.append(options.inverse());
-    } else {
+    if (Objects.equals(context, target)) {
       buffer.append(options.fn());
+    } else {
+      buffer.append(options.inverse());
     }
     return buffer;
   }

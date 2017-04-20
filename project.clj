@@ -15,6 +15,7 @@
   :source-paths ["src/clj"]
   :test-paths   ["test/clj"]
   :source-java-paths ["src/java"]
+  :java-source-paths ["src/java"]
   :javac-options ["-target" "1.7" "-source" "1.7" "-Xlint:-options"]
   :prep-tasks [["javac"] ["compile"]]
 

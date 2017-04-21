@@ -3,6 +3,7 @@
             [environ.core :refer [env]])
   (:import [com.github.jknack.handlebars Handlebars]
            [com.github.jknack.handlebars.helper StringHelpers]
+           [org.jobstreamer.handlebars.helper IfEqualsHelper]
            [com.github.jknack.handlebars.io FileTemplateLoader CompositeTemplateLoader
             ClassPathTemplateLoader TemplateLoader]))
 
@@ -22,7 +23,9 @@
                     (into-array TemplateLoader
                                 [(FileTemplateLoader. prefix)
                                  (ClassPathTemplateLoader. prefix)]))
-            runtime (.registerHelpers (Handlebars. loader) StringHelpers)]
+            runtime (doto (Handlebars. loader)
+                          (.registerHelpers StringHelpers)
+                          (.registerHelper IfEqualsHelper/NAME IfEqualsHelper/INSTANCE))]
 
         (assoc component :runtime runtime))))
 

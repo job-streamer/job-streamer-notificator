@@ -28,4 +28,9 @@
   (let [system (new-system config)]
     (testing "using template"
       (is (= "Hello, kawasima!\n"
-             (render (:template system) "success" {"message" "kawasima"}))) )))
+             (render (:template system) "success" {"message" "kawasima"}))))
+    (testing "using template with condition"
+      (is (= "\nsuccess\n"
+             (render (:template system) "ifequals" {"status" "0"})))
+      (is (= "\nfail\n"
+             (render (:template system) "ifequals" {"status" "1"}))))))

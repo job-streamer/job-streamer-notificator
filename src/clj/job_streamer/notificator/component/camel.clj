@@ -58,6 +58,8 @@
                      (process-template config template)
                      (.recipientList (Builder/simple (:uri config))))))
              (-> route
+                 (.when (. (Builder/header "type") (isEqualTo "healthcheck"))))
+             (-> route
                  (.otherwise)
                  (.to "log:ROUTE_NOT_FOUND?showAll=true")))
            (doseq [[type config] consumer-rules]
